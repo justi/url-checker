@@ -5,6 +5,7 @@ $datas = []
 class ABC
 	include HTTParty
 
+	CODES_TO_OBJ = ::Net::HTTPResponse::CODE_CLASS_TO_OBJ.merge ::Net::HTTPResponse::CODE_TO_OBJ
     attr_accessor :id, :urls
 
     def initialize(id, &block)
@@ -27,13 +28,21 @@ class ABC
 		  	url[option.first] = option.last
 		end
 		urls << url
+		result_ok = true
 		begin
 			case method
 			when 'GET'
 				response = self.class.get(url[:url])
+				result_ok &&= url[:respond_with] = response.code if url[:respond_with]
+				puts "Response: #{response.code} #{CODES_TO_OBJ[response.code.to_s]}"
+				puts result_ok
 			when 'POST'
+				response = self.class.post(url[:url])
+				result_ok &&= url[:respond_with] == response.code if url[:respond_with]
+				puts result_ok
 			else
 			end
+
 			rescue HTTParty::Error => e
 	    		puts 'HttParty::Error '+ e.message
 			rescue StandardError => e
@@ -48,6 +57,6 @@ end
 
 ABC.new("getbadges") do
 	get 'http://getbadges.io', :respond => :permanent_redirect, :respond_to => 'https://getbadges.io'
-	get 'https://https://getbadges.io/image.svg', :have_mime_type => 'image/svg'
-	post 'https://getbadges.io', :body => {content: 3}, :respond_with => :ok
+	get 'https://getbadges.io/image.svg', :have_mime_type => 'image/svg'
+	post 'https://getbadges.io', :body => {content: 3}, :respond_with => 200
 end
