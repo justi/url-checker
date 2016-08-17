@@ -1,6 +1,10 @@
+require 'httparty'
+
 $datas = []
 
 class ABC
+	include HTTParty
+
     attr_accessor :id, :urls
 
     def initialize(id, &block)
@@ -23,12 +27,17 @@ class ABC
 		  	url[option.first] = option.last
 		end
 		urls << url
-
-		case method
-		when 'GET'
-			puts url
-		when 'POST'
-		else
+		begin
+			case method
+			when 'GET'
+				response = self.class.get(url[:url])
+			when 'POST'
+			else
+			end
+			rescue HTTParty::Error => e
+	    		puts 'HttParty::Error '+ e.message
+			rescue StandardError => e
+				puts 'StandardError '+ e.message
 		end
 	end
 
