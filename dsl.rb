@@ -33,7 +33,8 @@ class ABC
 			case method
 			when 'GET'
 				response = self.class.get(url[:url])
-				result_ok &&= url[:respond_with] = response.code if url[:respond_with]
+				result_ok &&= url[:respond_with] == response.code if url[:respond_with]
+				result_ok &&= url[:respond_to] == response.request.last_uri.to_s if url[:respond_to] && response.request.last_uri
 				puts "Response: #{response.code} #{CODES_TO_OBJ[response.code.to_s]}"
 				puts result_ok
 			when 'POST'
@@ -56,7 +57,7 @@ class ABC
 end
 
 ABC.new("getbadges") do
-	get 'http://getbadges.io', :respond => :permanent_redirect, :respond_to => 'https://getbadges.io'
-	get 'https://getbadges.io/image.svg', :have_mime_type => 'image/svg'
-	post 'https://getbadges.io', :body => {content: 3}, :respond_with => 200
+	get 'http://getbadg.es', :respond => :permanent_redirect, :respond_to => 'https://getbadges.io/'
+	#get 'https://getbadges.io/image.svg', :have_mime_type => 'image/svg'
+	#post 'https://getbadges.io', :body => {content: 3}, :respond_with => 200
 end
