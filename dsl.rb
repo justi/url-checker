@@ -31,6 +31,7 @@ class ABC
 		loop do
 			response = self.class.get(input_url)
 			result << { url: input_url, status: response.code.to_s, redirects: redirects_count}
+			puts "****** url: #{input_url}, status code: #{response.code.to_s} (#{CODES_TO_OBJ[response.code.to_s]})"
 			input_url =	response.header['location']
 			redirects_count +=1
 			break unless input_url || redirects_count > MAX_REDIRECTS
@@ -42,12 +43,15 @@ class ABC
 		data.last[:url]
 	end
 
-	def get_response_status_code(data)
-		data.last[:status]
-	end
-
 	def get_response_redirects_count(data)
 		data.last[:redirects]
+	end
+
+	def validate_redirects(data, redirect_code)
+		data.each do |url_data|
+			return false if url_data[:status] != redirect_code.to_s
+		end
+		true
 	end
 
 	def request(method, url, options = {})
@@ -61,11 +65,10 @@ class ABC
 			case method
 			when 'GET'
 				results = follow_redirects(url[:url])
-				status_code = get_response_status_code(results)
 				respond_url = get_response_respond_with(results)
-				result_ok &&= url[:respond_with] == status_code if url[:respond_with]
 				result_ok &&= url[:respond_to] == respond_url if url[:respond_to]
-				puts "For #{url[:url]} response code is #{status_code} #{CODES_TO_OBJ[status_code]} and redirects: #{get_response_redirects_count(results)}"
+				result_ok &&= validate_redirects(results[0..(results.size-2)], url[:respond]) if url[:respond]
+				puts "RESULT: #{result_ok} for #{url[:url]}, redirects: #{get_response_redirects_count(results)}"
 			when 'POST'
 				response = self.class.post(url[:url])
 				result_ok &&= url[:respond_with] == response.code if url[:respond_with]
@@ -86,7 +89,8 @@ class ABC
 end
 
 ABC.new("getbadges") do
-	get 'http://getbadg.es', :respond => :permanent_redirect, :respond_to => 'https://getbadges.io/'
-	get 'https://getbadges.io/image.svg', :have_mime_type => 'image/svg'
+	get 'http://getbadg.es', :respond => 301, :respond_to => 'https://getbadges.io/'
+	get 'http://getbadges.io', :respond => 301, :respond_to => 'https://getbadges.io/'
+	#get 'https://getbadges.io/image.svg', :have_mime_type => 'image/svg'
 	#post 'https://getbadges.io', :body => {content: 3}, :respond_with => 200
 end
