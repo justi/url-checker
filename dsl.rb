@@ -56,6 +56,7 @@ class ABC
 	end
 
 	def request(method, url, options = {})
+		puts "*"
 		url = {:url => url}
 		options.each do |option|
 		  	url[option.first] = option.last
@@ -90,14 +91,20 @@ class ABC
 
 	def add
 		$datas << self.errors
+		self
+	end
+
+	def display_results
+		puts "Tests done: #{urls.length}"
+		puts "Errors:"
+		puts $datas
 	end
 end
 
 ABC.new("getbadges") do
-	get 'http://getbadg.e', :respond => 301, :respond_to => 'https://getbadges.io/'
+	get 'https://getbadges.io', :respond_with => 200
+	get 'http://getbadg.es', :respond => 301, :respond_to => 'https://getbadges.io/'
 	get 'http://getbadges.io', :respond => 301, :respond_to => 'https://getbadges.io/'
 	#get 'https://getbadges.io/image.svg', :have_mime_type => 'image/svg'
 	#post 'https://getbadges.io', :body => {content: 3}, :respond_with => 200
-end.add()
-
-puts $datas
+end.add().display_results()
