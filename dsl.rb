@@ -75,19 +75,19 @@ class Dsl
 
 		rescue HTTParty::Error => e
 	    	error = 'HttParty::Error '+ e.message
-	    	rule.error_message(error)
+	    	rule.error_message = error
 		rescue StandardError => e
 			error = 'StandardError '+ e.message
-			rule.error_message(error)
+			rule.error_message = error
 		else
 			rule.error_message = "Condition doesn't match" if false == result_ok
 		end
 	end
 
 	def display_results
-		puts "Tests done: #{rules.count}"
+		puts "---------------\nTests done: #{rules.count}"
 		if rules.with_errors.any?
-			puts "Errors:"
+			puts "Errors: #{rules.with_errors.length}\n---------------"
 			puts rules.with_errors
 		end
 	end

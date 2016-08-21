@@ -7,7 +7,7 @@ class Rule
 	end
 
 	def to_s
-	  result = "Rule #{url} "
+	  result = "** Rule #{url} "
       options.each do |attribute, value|
         result << "#{attribute.to_s}: #{value.to_s} "
       end
