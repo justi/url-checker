@@ -1,3 +1,6 @@
 get 'https://getbadges.io', :response_code => 200
 get 'http://getbadg.es', :response_code => 301, :redirect_url => 'https://getbadges.io/'
 get 'http://getbadges.io', :response_code => 301, :redirect_url => 'https://getbadges.io/'
+
+get 'https://justi-url-checker.getbadges.io/', :response_code => 301
+get 'https://justi-url-checker.getbadges.io/activity', :response_code => 200
