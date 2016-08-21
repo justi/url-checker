@@ -5,3 +5,6 @@
 Check provided url(s) for valid status codes and/or redirects
 
 gem install httparty
+
+For tests, run:
+ruby run.rb example.txt

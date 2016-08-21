@@ -1,5 +1,6 @@
 require 'httparty'
 require_relative 'rule'
+require_relative 'rules_container'
 
 class Dsl
 	include HTTParty
@@ -11,7 +12,7 @@ class Dsl
 
     def initialize(id, &block)
       @id = id
-	  @rules = []
+	  @rules = RulesContainer.new()
 	  instance_eval &block
 	end
 
@@ -56,7 +57,7 @@ class Dsl
 	def request(method, url, options = {})
 		puts "*"
 		rule = Rule.new(url, options)
-		rules << rule
+		@rules.add(rule)
 		result_ok = true
 		begin
 			case method
@@ -84,10 +85,10 @@ class Dsl
 	end
 
 	def display_results
-		puts "Tests done: #{rules.length}"
-		if rules.any?
-			puts "Errors: \n"
-			rules.each{|e| puts "#{e.to_s}"}
+		puts "Tests done: #{rules.count}"
+		if rules.with_errors.any?
+			puts "Errors:"
+			puts rules.with_errors
 		end
 	end
 end
