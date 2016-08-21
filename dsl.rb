@@ -8,11 +8,12 @@ class ABC
 	MAX_REDIRECTS = 3
 
 	CODES_TO_OBJ = ::Net::HTTPResponse::CODE_CLASS_TO_OBJ.merge ::Net::HTTPResponse::CODE_TO_OBJ
-    attr_accessor :id, :urls
+    attr_accessor :id, :urls, :errors
 
     def initialize(id, &block)
       self.id = id
 	  self.urls = []
+	  self.errors = []
 	  instance_eval &block
 	end
 
@@ -31,7 +32,7 @@ class ABC
 		loop do
 			response = self.class.get(input_url)
 			result << { url: input_url, status: response.code.to_s, redirects: redirects_count}
-			puts "****** url: #{input_url}, status code: #{response.code.to_s} (#{CODES_TO_OBJ[response.code.to_s]})"
+			#puts "****** url: #{input_url}, status code: #{response.code.to_s} (#{CODES_TO_OBJ[response.code.to_s]})"
 			input_url =	response.header['location']
 			redirects_count +=1
 			break unless input_url || redirects_count > MAX_REDIRECTS
@@ -68,29 +69,35 @@ class ABC
 				respond_url = get_response_respond_with(results)
 				result_ok &&= url[:respond_to] == respond_url if url[:respond_to]
 				result_ok &&= validate_redirects(results[0..(results.size-2)], url[:respond]) if url[:respond]
-				puts "RESULT: #{result_ok} for #{url[:url]}, redirects: #{get_response_redirects_count(results)}"
+				#puts "RESULT: #{result_ok} for #{url[:url]}, redirects: #{get_response_redirects_count(results)}"
 			when 'POST'
 				response = self.class.post(url[:url])
 				result_ok &&= url[:respond_with] == response.code if url[:respond_with]
-				puts result_ok
+				#puts result_ok
 			else
 			end
 
-			rescue HTTParty::Error => e
-	    		puts 'HttParty::Error '+ e.message
-			rescue StandardError => e
-				puts 'StandardError '+ e.message
+		rescue HTTParty::Error => e
+	    	error =  'HttParty::Error '+ e.message
+	    	errors << {:condition => url, :error => error }
+		rescue StandardError => e
+			error = 'StandardError '+ e.message
+			errors << {:condition => url, :error => error }
+		else
+			errors << {:condition => url, :error => "Condition doesn't match"} if false == result_ok
 		end
 	end
 
-	def add(datas)
-		datas << self
+	def add
+		$datas << self.errors
 	end
 end
 
 ABC.new("getbadges") do
-	get 'http://getbadg.es', :respond => 301, :respond_to => 'https://getbadges.io/'
+	get 'http://getbadg.e', :respond => 301, :respond_to => 'https://getbadges.io/'
 	get 'http://getbadges.io', :respond => 301, :respond_to => 'https://getbadges.io/'
 	#get 'https://getbadges.io/image.svg', :have_mime_type => 'image/svg'
 	#post 'https://getbadges.io', :body => {content: 3}, :respond_with => 200
-end
+end.add()
+
+puts $datas
