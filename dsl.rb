@@ -1,17 +1,17 @@
 require 'httparty'
+require_relative 'rule'
 
-class ABC
+class Dsl
 	include HTTParty
 	follow_redirects false
 	MAX_REDIRECTS = 3
 
 	CODES_TO_OBJ = ::Net::HTTPResponse::CODE_CLASS_TO_OBJ.merge ::Net::HTTPResponse::CODE_TO_OBJ
-    attr_accessor :id, :urls, :errors
+    attr_accessor :id, :rules
 
     def initialize(id, &block)
-      self.id = id
-	  self.urls = []
-	  self.errors = []
+      @id = id
+	  @rules = []
 	  instance_eval &block
 	end
 
@@ -55,40 +55,39 @@ class ABC
 
 	def request(method, url, options = {})
 		puts "*"
-		url = {:url => url}
-		options.each do |option|
-		  	url[option.first] = option.last
-		end
-		urls << url
+		rule = Rule.new(url, options)
+		rules << rule
 		result_ok = true
 		begin
 			case method
 			when 'GET'
-				results = follow_redirects(url[:url])
+				results = follow_redirects(rule.url)
 				respond_url = get_response_respond_with(results)
-				result_ok &&= url[:respond_to] == respond_url if url[:respond_to]
-				result_ok &&= validate_redirects(results[0..(results.size-2)], url[:respond]) if url[:respond]
-				#puts "RESULT: #{result_ok} for #{url[:url]}, redirects: #{get_response_redirects_count(results)}"
+				result_ok &&= rule.redirect_url == respond_url if rule.redirect_url
+				result_ok &&= validate_redirects(results[0..(results.size-2)], rule.response_code) if rule.response_code
+				#puts "RESULT: #{result_ok} for #{rule.url}, redirects: #{get_response_redirects_count(results)}"
 			when 'POST'
-				response = self.class.post(url[:url])
-				result_ok &&= url[:respond_with] == response.code if url[:respond_with]
-				#puts result_ok
+				response_result = self.class.post(rule.url)
+				result_ok &&= rule.redirect_url == response_result.code if rule.redirect_url
 			else
 			end
 
 		rescue HTTParty::Error => e
-	    	error =  'HttParty::Error '+ e.message
-	    	errors << {:condition => url, :error => error }
+	    	error = 'HttParty::Error '+ e.message
+	    	rule.error_message(error)
 		rescue StandardError => e
 			error = 'StandardError '+ e.message
-			errors << {:condition => url, :error => error }
+			rule.error_message(error)
 		else
-			errors << {:condition => url, :error => "Condition doesn't match"} if false == result_ok
+			rule.error_message = "Condition doesn't match" if false == result_ok
 		end
 	end
 
 	def display_results
-		puts "Tests done: #{urls.length}"
-		puts "Errors: \n#{errors}" if errors.first.any?
+		puts "Tests done: #{rules.length}"
+		if rules.any?
+			puts "Errors: \n"
+			rules.each{|e| puts "#{e.to_s}"}
+		end
 	end
 end
