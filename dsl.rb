@@ -1,7 +1,5 @@
 require 'httparty'
 
-$datas = []
-
 class ABC
 	include HTTParty
 	follow_redirects false
@@ -89,21 +87,8 @@ class ABC
 		end
 	end
 
-	def add
-		$datas << self.errors
-		self
-	end
-
 	def display_results
 		puts "Tests done: #{urls.length}"
-		puts "Errors: \n#{$datas}" if $datas.first.any?
+		puts "Errors: \n#{errors}" if errors.first.any?
 	end
 end
-
-filename = ARGV[0]
-data = File.read(filename) if filename
-ABC.new("getbadges") do
-	eval(data)
-	#get 'https://getbadges.io/image.svg', :have_mime_type => 'image/svg'
-	#post 'https://getbadges.io', :body => {content: 3}, :respond_with => 200
-end.add().display_results()
