@@ -96,15 +96,14 @@ class ABC
 
 	def display_results
 		puts "Tests done: #{urls.length}"
-		puts "Errors:"
-		puts $datas
+		puts "Errors: \n#{$datas}" if $datas.first.any?
 	end
 end
 
+filename = ARGV[0]
+data = File.read(filename) if filename
 ABC.new("getbadges") do
-	get 'https://getbadges.io', :respond_with => 200
-	get 'http://getbadg.es', :respond => 301, :respond_to => 'https://getbadges.io/'
-	get 'http://getbadges.io', :respond => 301, :respond_to => 'https://getbadges.io/'
+	eval(data)
 	#get 'https://getbadges.io/image.svg', :have_mime_type => 'image/svg'
 	#post 'https://getbadges.io', :body => {content: 3}, :respond_with => 200
 end.add().display_results()

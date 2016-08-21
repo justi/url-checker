@@ -1,0 +1,3 @@
+get 'https://getbadges.io', :respond_with => 200
+get 'http://getbadg.es', :respond => 301, :respond_to => 'https://getbadges.io/'
+get 'http://getbadges.io', :respond => 301, :respond_to => 'https://getbadges.io/'
