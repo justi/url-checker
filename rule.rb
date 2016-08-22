@@ -23,6 +23,10 @@ class Rule
         options[:redirect_url]
     end
 
+    def body
+        options[:body]
+    end
+
     def with_error?
         error_message != ""
     end

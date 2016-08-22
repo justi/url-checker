@@ -25,16 +25,16 @@ class Dsl
 		request('POST', url, options)
 	end
 
-	def follow_redirects(url, method)
+	def follow_redirects(rule, method)
 		redirects_count = 0
-		input_url = url
+		input_url = rule.url
 		result = []
 		loop do
 			case method
 			when 'GET'
 				response_value = self.class.get(input_url)
 			when 'POST'
-				response_value = self.class.post(input_url)
+				response_value = self.class.post(input_url, body: rule.body)
 			else
 			end
 			result << { url: input_url, status: response_value.code.to_s, redirects: redirects_count}
@@ -42,7 +42,7 @@ class Dsl
 			input_url =	response_value.header['location']
 			redirects_count +=1
 			if input_url && input_url !~ URI::regexp
-				uri = URI(url)
+				uri = URI(rule.url)
 				uri.path = input_url
 				input_url = uri.to_s
 			end
@@ -73,7 +73,7 @@ class Dsl
 		result_ok = true
 		results = []
 		begin
-			results = follow_redirects(rule.url, method)
+			results = follow_redirects(rule, method)
 
 			if rule.redirect_url
 				respond_url = get_response_respond_with(results)
@@ -87,7 +87,8 @@ class Dsl
 				result_ok &&= result
 				rule.error_message += "not #{rule.response_code} response code, " if false == result
 			end
-		rule.error_message += "redirects count: #{get_response_redirects_count(results)}" unless result_ok
+
+			rule.error_message += "redirects count: #{get_response_redirects_count(results)}" unless result_ok
 
 		rescue HTTParty::Error => e
 	    	error = 'HttParty::Error '+ e.message
