@@ -25,15 +25,21 @@ class Dsl
 		request('POST', url, options)
 	end
 
-	def follow_redirects(url)
+	def follow_redirects(url, method)
 		redirects_count = 0
 		input_url = url
 		result = []
 		loop do
-			response = self.class.get(input_url)
-			result << { url: input_url, status: response.code.to_s, redirects: redirects_count}
-			#puts "****** url: #{input_url}, status code: #{response.code.to_s} (#{CODES_TO_OBJ[response.code.to_s]})"
-			input_url =	response.header['location']
+			case method
+			when 'GET'
+				response_value = self.class.get(input_url)
+			when 'POST'
+				response_value = self.class.post(input_url)
+			else
+			end
+			result << { url: input_url, status: response_value.code.to_s, redirects: redirects_count}
+			#puts "****** url: #{input_url}, status code: #{response_value.code.to_s} (#{CODES_TO_OBJ[response_value.code.to_s]})"
+			input_url =	response_value.header['location']
 			redirects_count +=1
 			if input_url && input_url !~ URI::regexp
 				uri = URI(url)
@@ -65,29 +71,23 @@ class Dsl
 		rule = Rule.new(url, options)
 		@rules.add(rule)
 		result_ok = true
+		results = []
 		begin
-			case method
-			when 'GET'
-				results = follow_redirects(rule.url)
+			results = follow_redirects(rule.url, method)
 
-				if rule.redirect_url
-					respond_url = get_response_respond_with(results)
-					result = rule.redirect_url == respond_url
-					result_ok &&= result
-					rule.error_message += "not #{rule.redirect_url} redirect url, " if false == result
-				end
-
-				if rule.response_code
-					result = validate_redirects(results[0..(results.size-2)], rule.response_code)
-					result_ok &&= result
-					rule.error_message += "not #{rule.response_code} response code, " if false == result
-				end
-				rule.error_message += "redirects count: #{get_response_redirects_count(results)}" unless result_ok
-			when 'POST'
-				response_result = self.class.post(rule.url)
-				result_ok &&= rule.redirect_url == response_result.code if rule.redirect_url
-			else
+			if rule.redirect_url
+				respond_url = get_response_respond_with(results)
+				result = rule.redirect_url == respond_url
+				result_ok &&= result
+				rule.error_message += "not #{rule.redirect_url} redirect url, " if false == result
 			end
+
+			if rule.response_code
+				result = validate_redirects(results[0..(results.size-2)], rule.response_code)
+				result_ok &&= result
+				rule.error_message += "not #{rule.response_code} response code, " if false == result
+			end
+		rule.error_message += "redirects count: #{get_response_redirects_count(results)}" unless result_ok
 
 		rescue HTTParty::Error => e
 	    	error = 'HttParty::Error '+ e.message
@@ -105,6 +105,8 @@ class Dsl
 		if rules.with_errors.any?
 			puts "Errors: #{rules.with_errors.length}\n---------------"
 			puts rules.with_errors
+		else
+			puts "All fine :)\n---------------"
 		end
 	end
 end
