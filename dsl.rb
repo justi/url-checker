@@ -39,7 +39,6 @@ class Dsl
 				uri = URI(url)
 				uri.path = input_url
 				input_url = uri.to_s
-				puts input_url
 			end
 			break unless input_url || redirects_count > MAX_REDIRECTS
 		end
@@ -55,7 +54,6 @@ class Dsl
 	end
 
 	def validate_redirects(data, redirect_code)
-		puts "Validate"
 		data.each do |url_data|
 			return false if url_data[:status] != redirect_code.to_s
 		end
