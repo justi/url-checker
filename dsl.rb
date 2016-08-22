@@ -8,7 +8,6 @@ class Dsl
 	follow_redirects false
 	MAX_REDIRECTS = 3
 
-	CODES_TO_OBJ = ::Net::HTTPResponse::CODE_CLASS_TO_OBJ.merge ::Net::HTTPResponse::CODE_TO_OBJ
     attr_accessor :id, :rules
 
     def initialize(id, &block)
@@ -38,7 +37,6 @@ class Dsl
 			else
 			end
 			result << { url: input_url, status: response_value.code.to_s, redirects: redirects_count}
-			#puts "****** url: #{input_url}, status code: #{response_value.code.to_s} (#{CODES_TO_OBJ[response_value.code.to_s]})"
 			input_url =	response_value.header['location']
 			redirects_count +=1
 			if input_url && input_url !~ URI::regexp
