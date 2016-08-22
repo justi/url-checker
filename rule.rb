@@ -27,6 +27,10 @@ class Rule
         options[:body]
     end
 
+    def content_type
+        options[:content_type]
+    end
+
     def with_error?
         error_message != ""
     end

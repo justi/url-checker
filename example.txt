@@ -4,3 +4,4 @@ get 'http://getbadges.io', :response_code => 301, :redirect_url => 'https://getb
 get 'http://justi-url-checker.getbadges.io/', :response_code => 301
 get 'https://justi-url-checker.getbadges.io/activity', :response_code => 200
 post 'https://getbadges.io', :body => {content: 3}, :response_code => 200
+get 'https://justi-url-checker.getbadges.io/images/59-level-up.png', :content_type => 'image/png'

@@ -36,7 +36,13 @@ class Dsl
 				response_value = self.class.post(input_url, body: rule.body)
 			else
 			end
-			result << { url: input_url, status: response_value.code.to_s, redirects: redirects_count}
+			result << {
+				url: input_url,
+				status: response_value.code.to_s,
+				redirects: redirects_count,
+				content_type: response_value.header['content-type']
+			}
+
 			input_url =	response_value.header['location']
 			redirects_count +=1
 			if input_url && input_url !~ URI::regexp
@@ -51,6 +57,10 @@ class Dsl
 
 	def get_response_respond_with(data)
 		data.last[:url]
+	end
+
+	def get_content_type(data)
+		data.last[:content_type]
 	end
 
 	def get_response_redirects_count(data)
@@ -84,6 +94,13 @@ class Dsl
 				result = validate_redirects(results[0..(results.size-2)], rule.response_code)
 				result_ok &&= result
 				rule.error_message += "not #{rule.response_code} response code, " if false == result
+			end
+
+			if rule.content_type
+				content_type = get_content_type(results)
+				result = rule.content_type == content_type
+				result_ok &&= result
+				rule.error_message += "not #{rule.content_type} content type, " if false == result
 			end
 
 			rule.error_message += "redirects count: #{get_response_redirects_count(results)}" unless result_ok
