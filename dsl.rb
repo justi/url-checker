@@ -1,4 +1,5 @@
 require 'httparty'
+require 'uri'
 require_relative 'rule'
 require_relative 'rules_container'
 
@@ -34,6 +35,12 @@ class Dsl
 			#puts "****** url: #{input_url}, status code: #{response.code.to_s} (#{CODES_TO_OBJ[response.code.to_s]})"
 			input_url =	response.header['location']
 			redirects_count +=1
+			if input_url && input_url !~ URI::regexp
+				uri = URI(url)
+				uri.path = input_url
+				input_url = uri.to_s
+				puts input_url
+			end
 			break unless input_url || redirects_count > MAX_REDIRECTS
 		end
 		return result
@@ -48,6 +55,7 @@ class Dsl
 	end
 
 	def validate_redirects(data, redirect_code)
+		puts "Validate"
 		data.each do |url_data|
 			return false if url_data[:status] != redirect_code.to_s
 		end
@@ -59,6 +67,7 @@ class Dsl
 		rule = Rule.new(url, options)
 		@rules.add(rule)
 		result_ok = true
+		puts rule.response_code
 		begin
 			case method
 			when 'GET'
