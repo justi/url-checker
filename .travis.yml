@@ -1,4 +1,6 @@
 language: ruby
+install:
+  - gem install httparty
 rvm:
  - 2.2
 
