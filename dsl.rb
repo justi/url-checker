@@ -52,7 +52,7 @@ class Dsl
 			end
 			break unless input_url || redirects_count > MAX_REDIRECTS
 		end
-		return result
+		result
 	end
 
 	def get_response_respond_with(data)
