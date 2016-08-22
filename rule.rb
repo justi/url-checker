@@ -4,6 +4,7 @@ class Rule
     def initialize(url, options)
 	  @url = url
 	  @options = options
+	  @error_message = ""
 	end
 
 	def to_s
@@ -15,7 +16,7 @@ class Rule
     end
 
     def response_code
-        options[:respond_code]
+        options[:response_code]
     end
 
     def redirect_url
@@ -23,6 +24,6 @@ class Rule
     end
 
     def with_error?
-        !error_message.nil?
+        error_message != ""
     end
 end

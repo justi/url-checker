@@ -67,15 +67,24 @@ class Dsl
 		rule = Rule.new(url, options)
 		@rules.add(rule)
 		result_ok = true
-		puts rule.response_code
 		begin
 			case method
 			when 'GET'
 				results = follow_redirects(rule.url)
-				respond_url = get_response_respond_with(results)
-				result_ok &&= rule.redirect_url == respond_url if rule.redirect_url
-				result_ok &&= validate_redirects(results[0..(results.size-2)], rule.response_code) if rule.response_code
-				#puts "RESULT: #{result_ok} for #{rule.url}, redirects: #{get_response_redirects_count(results)}"
+
+				if rule.redirect_url
+					respond_url = get_response_respond_with(results)
+					result = rule.redirect_url == respond_url
+					result_ok &&= result
+					rule.error_message += "not #{rule.redirect_url} redirect url, " if false == result
+				end
+
+				if rule.response_code
+					result = validate_redirects(results[0..(results.size-2)], rule.response_code)
+					result_ok &&= result
+					rule.error_message += "not #{rule.response_code} response code, " if false == result
+				end
+				rule.error_message += "redirects count: #{get_response_redirects_count(results)}" unless result_ok
 			when 'POST'
 				response_result = self.class.post(rule.url)
 				result_ok &&= rule.redirect_url == response_result.code if rule.redirect_url
@@ -89,7 +98,7 @@ class Dsl
 			error = 'StandardError '+ e.message
 			rule.error_message = error
 		else
-			rule.error_message = "Condition doesn't match" if false == result_ok
+			#rule.error_message = "Condition doesn't match" if false == result_ok
 		end
 	end
 
