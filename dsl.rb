@@ -69,7 +69,7 @@ class Dsl
 
 	def validate_redirects(data, redirect_code)
 		data.each do |url_data|
-			return false if url_data[:status] != redirect_code.to_s
+			return url_data[:status] if url_data[:status] != redirect_code.to_s
 		end
 		true
 	end
@@ -87,20 +87,20 @@ class Dsl
 				respond_url = get_response_respond_with(results)
 				result = rule.redirect_url == respond_url
 				result_ok &&= result
-				rule.error_message += "not #{rule.redirect_url} redirect url, " if false == result
+				rule.error_message += "the final destination is #{respond_url}, " if false == result
 			end
 
 			if rule.response_code
-				result = validate_redirects(results[0..(results.size-2)], rule.response_code)
-				result_ok &&= result
-				rule.error_message += "not #{rule.response_code} response code, " if false == result
+				valid_or_code = validate_redirects(results[0..(results.size-2)], rule.response_code)
+				result_ok &&= true === valid_or_code
+				rule.error_message += "response code is #{valid_or_code}, " unless true === valid_or_code
 			end
 
 			if rule.content_type
 				content_type = get_content_type(results)
 				result = rule.content_type == content_type
 				result_ok &&= result
-				rule.error_message += "not #{rule.content_type} content type, " if false == result
+				rule.error_message += "#{content_type} content type, " if false == result
 			end
 
 			rule.error_message += "redirects count: #{get_response_redirects_count(results)}" unless result_ok
