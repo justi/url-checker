@@ -26,7 +26,7 @@ class Dsl
 
 	def follow_redirects(rule, method)
 		redirects_count = 0
-		input_url = rule.url
+		input_url = URI.encode(rule.url)
 		result = []
 		loop do
 			case method
@@ -43,7 +43,7 @@ class Dsl
 				content_type: response_value.header['content-type']
 			}
 
-			input_url =	response_value.header['location']
+			input_url =	URI.encode(response_value.header['location']) if response_value.header['location']
 			redirects_count +=1
 			if input_url && input_url !~ URI::regexp
 				uri = URI(rule.url)
