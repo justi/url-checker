@@ -3,7 +3,7 @@ get 'https://getbadges.io?ref=producthunt', :response_code => 200
 get 'https://getbadges.io/login', :response_code => 200
 get 'https://getbadges.io/register', :response_code => 200
 get 'https://getbadges.io/register/', :response_code => 200
-get 'https://getbadges.io/register', :response_code => 301, :redirect_url => 'https://getbadges.io/register'
+get 'https://getbadges.io/register', :response_code => 301, :redirect_url => 'https://getbadges.io/register/'
 
 get 'https://getbadges.io/', :response_code => 301, :redirect_url => 'https://getbadges.io'
 get 'http://getbadg.es', :response_code => 301, :redirect_url => 'https://getbadges.io'
@@ -11,6 +11,7 @@ get 'http://getbadges.io', :response_code => 301, :redirect_url => 'https://getb
 
 get 'http://www.getbadges.io', :response_code => 301, :redirect_url => 'https://getbadges.io'
 get 'https://www.getbadges.io', :response_code => 301, :redirect_url => 'https://getbadges.io'
+get 'https://getbadges.getbadges.io', :response_code => 301, :redirect_url => 'https://getbadges.io/login'
 
 post 'https://getbadges.io', :body => {content: 3}, :response_code => 200
 

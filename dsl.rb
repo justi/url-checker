@@ -52,7 +52,7 @@ class Dsl
 				uri.path = input_url
 				input_url = uri.to_s
 			end
-			break unless input_url || redirects_count > MAX_REDIRECTS
+			break unless (input_url && redirects_count < MAX_REDIRECTS)
 		end
 		result
 	end
