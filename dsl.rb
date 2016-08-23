@@ -75,7 +75,6 @@ class Dsl
 	end
 
 	def request(method, url, options = {})
-		puts "*"
 		rule = Rule.new(url, options)
 		@rules.add(rule)
 		result_ok = true
@@ -108,10 +107,13 @@ class Dsl
 		rescue HTTParty::Error => e
 	    	error = 'HttParty::Error '+ e.message
 	    	rule.error_message = error
+	    	result_ok = false
 		rescue StandardError => e
 			error = 'StandardError '+ e.message
 			rule.error_message = error
+		    result_ok = false
 		end
+		puts result_ok ? "+" : "-"
 	end
 
 	def display_results
