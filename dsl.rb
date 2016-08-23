@@ -43,7 +43,7 @@ class Dsl
 				content_type: response_value.header['content-type']
 			}
 
-			input_url =	URI.encode(response_value.header['location']) if response_value.header['location']
+			input_url =	response_value.header['location'] ? URI.encode(response_value.header['location']) : nil
 			redirects_count +=1
 			if input_url && input_url !~ URI::regexp
 				uri = URI(rule.url)
