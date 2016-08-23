@@ -3,6 +3,8 @@ require 'uri'
 require_relative 'rule'
 require_relative 'rules_container'
 
+$stdout.sync = true
+
 class Dsl
 	include HTTParty
 	follow_redirects false
@@ -113,11 +115,11 @@ class Dsl
 			rule.error_message = error
 		    result_ok = false
 		end
-		puts result_ok ? "+" : "-"
+		print result_ok ? "+" : "-"
 	end
 
 	def display_results
-		puts "---------------\nTests done: #{rules.count}"
+		puts "\n---------------\nTests done: #{rules.count}"
 		if rules.with_errors.any?
 			puts "Errors: #{rules.with_errors.length}\n---------------"
 			puts rules.with_errors
