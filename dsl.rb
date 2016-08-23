@@ -111,8 +111,6 @@ class Dsl
 		rescue StandardError => e
 			error = 'StandardError '+ e.message
 			rule.error_message = error
-		else
-			#rule.error_message = "Condition doesn't match" if false == result_ok
 		end
 	end
 
