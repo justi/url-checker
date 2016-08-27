@@ -1,6 +1,7 @@
 language: ruby
 install:
   - gem install httparty
+  - gem install mail
 rvm:
  - 2.2
 

@@ -5,7 +5,10 @@
 
 Check provided url(s) for valid status codes and/or redirects
 
-gem install httparty
+gem install httparty mail
+
+Config for gmail - turn on "for less secure apps"
+https://www.google.com/settings/security/lesssecureapps
 
 For tests, run:
 ruby run.rb example.txt

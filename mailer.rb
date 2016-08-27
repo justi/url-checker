@@ -1,7 +1,9 @@
-class Mailer
+require_relative 'mail'
 
+class Mailer
     def initialize(rules_with_errors)
         @rules_with_errors = rules_with_errors
+
     end
 
     def prepare_msg
@@ -14,18 +16,20 @@ class Mailer
 
     def send
         message = prepare_msg
-    end
+        Mail.deliver do
+           to 'recipient_email'
+           from 'sender_email'
+           subject 'testing sendmail'
 
+           html_part do
+               content_type 'text/html; charset=UTF-8'
+            body message
+           end
+        end
     end
 
     def msg_body
         <<MESSAGE_END
-            From: Private Person <me@fromdomain.com>
-            To: A Test User <test@todomain.com>
-            MIME-Version: 1.0
-            Content-type: text/html
-            Subject: SMTP e-mail test
-
             This is an e-mail message to be sent in HTML format
 
             <b>This is HTML message.</b>
