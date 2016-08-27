@@ -2,6 +2,7 @@ require 'httparty'
 require 'uri'
 require_relative 'rule'
 require_relative 'rules_container'
+require_relative 'mailer'
 
 $stdout.sync = true
 
@@ -125,6 +126,14 @@ class Dsl
 			puts rules.with_errors
 		else
 			puts "All fine :)\n---------------"
+		end
+		return self
+	end
+
+	def send_email
+		if rules.with_errors.any?
+			mailer = Mailer.new(rules.with_errors)
+			mailer.send
 		end
 	end
 end

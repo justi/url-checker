@@ -10,7 +10,7 @@ if filename
 		eval(data)
 		#get 'https://getbadges.io/image.svg', :have_mime_type => 'image/svg'
 		#post 'https://getbadges.io', :body => {content: 3}, :respond_with => 200
-	end.display_results()
+	end.display_results().send_email()
 else
 	puts "Please type: ruby run.rb input_txt_file"
 end
