@@ -131,9 +131,11 @@ class Dsl
 	end
 
 	def send_email
-		if rules.with_errors.any?
-			mailer = Mailer.new(rules.with_errors)
-			mailer.send
+		unless ENV['RACK_ENV'] == 'test'
+			if rules.with_errors.any?
+				mailer = Mailer.new(rules.with_errors)
+				mailer.send
+			end
 		end
 	end
 end
