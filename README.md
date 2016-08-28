@@ -11,4 +11,4 @@ Config for gmail - turn on "for less secure apps"
 https://www.google.com/settings/security/lesssecureapps
 
 For tests, run:
-ruby run.rb example.txt
+ruby run.rb example.rb
