@@ -2,7 +2,7 @@ class LogContainer
 
     def write_logs(content)
         begin
-          file = File.open("log.txt", "w")
+          file = File.open("error_log.txt", "w")
           file.write(content)
         rescue IOError => e
             puts e
@@ -12,6 +12,6 @@ class LogContainer
     end
 
     def read_logs
-        File.read("log.txt") if File.exists?("log.txt")
+        File.read("error_log.txt") if File.exists?("error_log.txt")
     end
 end

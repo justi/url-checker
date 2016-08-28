@@ -38,7 +38,7 @@ class Dsl
 			when 'GET'
 				response_value = self.class.get(input_url)
 			when 'POST'
-				response_value = self.class.post(input_url, body: rule.body)
+				response_value = self.class.post(input_url, body: rule.body_to_json)
 			else
 			end
 			result << {
@@ -139,7 +139,6 @@ class Dsl
 			unless ENV['RACK_ENV'] == 'test'
 				mailer = Mailer.new(rules.with_errors)
 				mailer.send
-
 			end
 		end
 	end

@@ -27,6 +27,10 @@ class Rule
         options[:body]
     end
 
+    def body_to_json
+        body.to_json if body
+    end
+
     def content_type
         options[:content_type]
     end
