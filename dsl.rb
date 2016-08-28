@@ -3,6 +3,7 @@ require 'uri'
 require_relative 'rule'
 require_relative 'rules_container'
 require_relative 'mailer'
+require_relative 'log_container'
 
 $stdout.sync = true
 
@@ -16,6 +17,7 @@ class Dsl
     def initialize(id, &block)
       @id = id
 	  @rules = RulesContainer.new()
+	  @logs = LogContainer.new()
 	  instance_eval &block
 	end
 
@@ -123,7 +125,7 @@ class Dsl
 		puts "\n---------------\nTests done: #{rules.count}"
 		if rules.with_errors.any?
 			puts "Errors: #{rules.with_errors.length}\n---------------"
-			puts rules.with_errors
+			puts rules.errors_to_s
 		else
 			puts "All fine :)\n---------------"
 		end
@@ -131,11 +133,18 @@ class Dsl
 	end
 
 	def send_email
-		unless ENV['RACK_ENV'] == 'test'
-			if rules.with_errors.any?
+		if is_someting_new
+			@logs.write_logs(rules.errors_to_s)
+
+			unless ENV['RACK_ENV'] == 'test'
 				mailer = Mailer.new(rules.with_errors)
 				mailer.send
+
 			end
 		end
+	end
+
+	def is_someting_new
+		@logs.read_logs != rules.errors_to_s
 	end
 end

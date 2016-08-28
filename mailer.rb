@@ -8,8 +8,13 @@ class Mailer
 
     def prepare_msg
         msg = msg_body
-        @rules_with_errors.each do |rule|
-           msg += "<p>#{rule.to_s}</p>"
+
+        if @rules_with_errors.any?
+            @rules_with_errors.each do |rule|
+               msg += "<p>#{rule.to_s}</p>"
+            end
+        else
+            msg += "No errors!"
         end
         msg
     end
