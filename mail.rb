@@ -1,10 +1,10 @@
 require 'mail'
 
 options = {
-    :address              => "smtp.gmail.com",
-    :port                 => 587,
-    :user_name            => '****',
-    :password             => '****',
+    :address              => ENV['URL_CHECKER_MAILER_HOST'],
+    :port                 => ENV['URL_CHECKER_MAILER_PORT'],
+    :user_name            => ENV['URL_CHECKER_MAILER_USERNAME'],
+    :password             => ENV['URL_CHECKER_MAILER_PASSWORD'],
     :authentication       => 'plain',
     :enable_starttls_auto => true
 }
