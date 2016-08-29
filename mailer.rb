@@ -3,7 +3,10 @@ require_relative 'mail'
 class Mailer
     def initialize(rules_with_errors)
         @rules_with_errors = rules_with_errors
+    end
 
+    def admin_email
+        ENV['URL_CHECKER_MAILER_ADMIN']
     end
 
     def prepare_msg
@@ -21,24 +24,22 @@ class Mailer
 
     def send
         message = prepare_msg
+        admin_e = admin_email
         Mail.deliver do
-           to 'recipient_email'
-           from 'sender_email'
-           subject 'testing sendmail'
+           to admin_e
+           from "sender@some.email"
+           subject 'Url checker report'
 
            html_part do
                content_type 'text/html; charset=UTF-8'
-            body message
+           body message
            end
         end
     end
 
     def msg_body
         <<MESSAGE_END
-            This is an e-mail message to be sent in HTML format
-
-            <b>This is HTML message.</b>
-            <h1>This is headline.</h1>
+            <h1>Report</h1>
 MESSAGE_END
     end
 end
