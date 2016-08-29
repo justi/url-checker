@@ -10,5 +10,15 @@ gem install httparty mail
 Config for gmail - turn on "for less secure apps"
 https://www.google.com/settings/security/lesssecureapps
 
+You should set the following ENVs in you `.bashrc` file:
+
+```
+export URL_CHECKER_MAILER_HOST='smtp.gmail.com'
+export URL_CHECKER_MAILER_PORT='587'
+export URL_CHECKER_MAILER_USERNAME='YOUR_USERNAME'
+export URL_CHECKER_MAILER_PASSWORD='YOUR_PASSWORD'
+export URL_CHECKER_ADMIN_EMAIL='admin@yourdomain.com'
+```
+
 For tests, run:
 ruby run.rb example.rb
