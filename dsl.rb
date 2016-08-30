@@ -122,22 +122,26 @@ class Dsl
 	end
 
 	def display_results
-		puts "\n---------------\nTests done: #{rules.count}"
+		puts summary_results
+		self
+	end
+
+	def summary_results
+		res = "\n---------------\nTests done: #{rules.count}\n"
 		if rules.with_errors.any?
-			puts "Errors: #{rules.with_errors.length}\n---------------"
-			puts rules.errors_to_s
+			res += "Errors: #{rules.with_errors.length}\n---------------\n"
 		else
-			puts "All fine :)\n---------------"
+			res += "All fine :)\n---------------"
 		end
-		return self
+		res
 	end
 
 	def send_email
 		if is_someting_new
-			@logs.write_logs(rules.errors_to_s)
+			@logs.write_logs(summary_results + rules.errors_to_s)
 
 			unless ENV['RACK_ENV'] == 'test'
-				mailer = Mailer.new(rules.with_errors)
+				mailer = Mailer.new(summary_results, rules.with_errors)
 				mailer.send
 			end
 		end

@@ -2,8 +2,8 @@ class RulesContainer
     attr_accessor :rules
 
     def initialize()
-	  @rules = []
-	end
+        @rules = []
+    end
 
     def add(rule)
         @rules << rule

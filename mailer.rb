@@ -1,7 +1,8 @@
 require_relative 'mail'
 
 class Mailer
-    def initialize(rules_with_errors)
+    def initialize(summary, rules_with_errors)
+        @summary = summary
         @rules_with_errors = rules_with_errors
     end
 
@@ -11,7 +12,7 @@ class Mailer
 
     def prepare_msg
         msg = msg_body
-
+        msg += "<p>#{@summary}</p>"
         if @rules_with_errors.any?
             @rules_with_errors.each do |rule|
                msg += "<p>#{rule.to_s}</p>"
@@ -32,7 +33,7 @@ class Mailer
 
            html_part do
                content_type 'text/html; charset=UTF-8'
-           body message
+               body message
            end
         end
     end

@@ -13,7 +13,6 @@ https://www.google.com/settings/security/lesssecureapps
 You should set the following ENVs in you `.bashrc` file:
 
 ```
-export URL_CHECKER_MAILER_DOMAIN='my_domain_or_ip'
 export URL_CHECKER_MAILER_HOST='smtp.gmail.com'
 export URL_CHECKER_MAILER_PORT='587'
 export URL_CHECKER_MAILER_USERNAME='YOUR_USERNAME'
