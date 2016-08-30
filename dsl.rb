@@ -138,7 +138,7 @@ class Dsl
 
 	def send_email
 		if is_someting_new
-			@logs.write_logs(summary_results + rules.errors_to_s)
+			@logs.write_logs(rules.errors_to_s)
 
 			unless ENV['RACK_ENV'] == 'test'
 				mailer = Mailer.new(summary_results, rules.with_errors)
