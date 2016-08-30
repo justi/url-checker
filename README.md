@@ -7,9 +7,6 @@ Check provided url(s) for valid status codes and/or redirects
 
 gem install httparty mail
 
-Config for gmail - turn on "for less secure apps"
-https://www.google.com/settings/security/lesssecureapps
-
 You should set the following ENVs in you `.bashrc` file:
 
 ```
@@ -23,3 +20,10 @@ export URL_CHECKER_MAILER_ADMIN='admin@yourdomain.com'
 
 For tests, run:
 ruby run.rb example.rb
+
+GMAIL config
+- enable gmail "for less secure apps"
+https://www.google.com/settings/security/lesssecureapps
+- chcek you gmail for authorizing new incoming request, set it "as you"
+- if still not working (Net::SMTPAuthenticationError), probably you try to connect from unknown location
+In Incognito, login to your gmail and go to https://accounts.google.com/DisplayUnlockCaptcha, then try to send email again
