@@ -17,7 +17,7 @@ export URL_CHECKER_MAILER_HOST='smtp.gmail.com'
 export URL_CHECKER_MAILER_PORT='587'
 export URL_CHECKER_MAILER_USERNAME='YOUR_USERNAME'
 export URL_CHECKER_MAILER_PASSWORD='YOUR_PASSWORD'
-export URL_CHECKER_ADMIN_EMAIL='admin@yourdomain.com'
+export URL_CHECKER_MAILER_ADMIN='admin@yourdomain.com'
 ```
 
 For tests, run:
