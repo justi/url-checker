@@ -1,5 +1,7 @@
 # url-checker
 
+[![Join the chat at https://gitter.im/url-checker/Lobby](https://badges.gitter.im/url-checker/Lobby.svg)](https://gitter.im/url-checker/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![GetBadges Game](https://justi-url-checker.getbadges.io/shield/company/justi-url-checker)](https://justi-url-checker.getbadges.io/?ref=shield-game)
 [![Build Status](https://travis-ci.org/justi/url-checker.svg?branch=master)](https://travis-ci.org/justi/url-checker)
 
